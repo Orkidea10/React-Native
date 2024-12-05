@@ -1,15 +1,5 @@
-'#' is not recognized as an internal or external command,
-operable program or batch file.
+# Ignore node_modules folder
+node_modules/
 
-C:\Users\User\OneDrive\Desktop\orkidea\ReactNative>node_modules/
-'node_modules' is not recognized as an internal or external command,
-operable program or batch file.
-
-C:\Users\User\OneDrive\Desktop\orkidea\ReactNative>
-C:\Users\User\OneDrive\Desktop\orkidea\ReactNative># Ignore Expo folder
-'#' is not recognized as an internal or external command,
-operable program or batch file.
-
-C:\Users\User\OneDrive\Desktop\orkidea\ReactNative>.expo/
-'.expo' is not recognized as an internal or external command,
-operable program or batch file.
+# Ignore Expo folder
+.expo/

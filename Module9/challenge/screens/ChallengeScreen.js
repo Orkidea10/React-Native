@@ -5,7 +5,10 @@ const ChallengeScreen = () => {
   const handleButtonClick = (buttonName) => {
     console.log(`${buttonName} button has been clicked`);
   };
+ 
 
+ 
+  
   return (
     <View style={styles.page}>
       <Text style={styles.header}>App</Text>
@@ -13,7 +16,7 @@ const ChallengeScreen = () => {
         <View style={styles.avatarpic}>
           <Image
             source={{
-              uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // Replace with a placeholder
+              uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
             }}
             style={styles.avatar}
           />

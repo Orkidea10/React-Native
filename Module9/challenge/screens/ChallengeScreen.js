@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Button} from 'react-native';
 
-const ChallengeScreen = () => {
+const ChallengeScreen = ({navigation}) => {
   const handleButtonClick = (buttonName) => {
     console.log(`${buttonName} button has been clicked`);
   };
@@ -12,6 +12,12 @@ const ChallengeScreen = () => {
   return (
     <View style={styles.page}>
       <Text style={styles.header}>App</Text>
+      <TouchableOpacity 
+        style={styles.descriptionBtn}
+        onPress={() => navigation.navigate('Description')}>
+        <Text style={styles.descBtnText}>Description</Text>
+      </TouchableOpacity>
+
       <View style={styles.profile}>
         <View style={styles.avatarpic}>
           <Image
@@ -139,6 +145,19 @@ const styles = StyleSheet.create({
     height: 100, 
     borderRadius: 10,
   },
+  descriptionBtn:{
+    backgroundColor: '#FFD700',
+    paddingVertical: 10,
+    width: 150,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  descBtnText : {
+    color: 'white',
+    fontSize:18,
+    fontWeight:'bold'
+  },
+
 });
 
 export default ChallengeScreen;

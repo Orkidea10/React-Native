@@ -13,12 +13,10 @@ export default function App() {
         <Stack.Screen 
           name="BoxScreen" 
           component={BoxScreen} 
-          options={{ title: 'Box Screen' }} 
         />
         <Stack.Screen 
           name="BoxScreenChallenge" 
           component={BoxScreenChallenge} 
-          options={{ title: 'Box Screen Challenge' }} 
         />
       </Stack.Navigator>
     </NavigationContainer>

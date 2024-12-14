@@ -5,14 +5,14 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native'
 const BoxScreen = ({ navigation }) => {
     return (
       <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-around', alignItems: "stretch" }}>
-        {/* Navigation Button */}
+
         <TouchableOpacity
           style={styles.navigateBtn}
           onPress={() => navigation.navigate('BoxScreenChallenge')}
         >
           <Text style={styles.navigatetxt}>Box Screen Challenge</Text>
         </TouchableOpacity>
-        
+
         <View style={{width:50, height:50,backgroundColor:"green"}}></View>
         <View style={{ height:50,backgroundColor:"skyblue"}}></View>
         <View style={{ height:50,backgroundColor:"red"}}></View>

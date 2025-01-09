@@ -1,0 +1,27 @@
+[
+    {
+        "id":"1",
+        "name":"Disneyland",
+        "country":"France",
+        "description":"Disneyland is the happiest place on earth"
+    },
+
+    {
+        "id":"2",
+        "name":"Colosseum",
+        "country":"Italy",
+        "description":"An ancient Roman amphitheater in Rome, known for its history and architectural grandeur."
+    },
+    {
+        "id":"3",
+        "name":"Big Ben",
+        "country":"United kingdom",
+        "description":"London's iconic clock tower"
+    },
+    {
+        "id":"4",
+        "name":"Eiffel Tower",
+        "country":"France",
+        "description":"A world-famous iron tower in Paris"
+    }
+]

@@ -1,0 +1,77 @@
+[
+{
+    "id":"1",
+    "name":"iPad pro",
+    "category":"electronics",
+    "price":"1,099.99",
+    "description":"A 13-inch iPad with a M2 Bionic chip",
+    "stock":"30",
+    "image":"images/ipad.webp"
+
+},
+{
+    "id":"2",
+    "name":"Spalding NBA Official Basketball",
+    "category":"Sports",
+    "price":"28.00",
+    "description":"Durable, high-quality basketball suitable for indoor and outdoor play",
+    "stock":"200",
+    "image":"images/basketball.webp"
+
+},
+{
+    "id":"3",
+    "name":"Samsung Galaxy S23 Ultra",
+    "category":"electronics",
+    "price":"1,199.99",
+    "description":"A smartphone with a 6.8-inch display, 200 MP camera, Snapdragon 8 Gen 2 processor, and long-lasting battery life.",
+    "stock":"80",
+    "image":"images/samsung.jpg"
+
+},
+{
+    "id":"4",
+    "name":"Dyson Supersonic Hair Dryer",
+    "category":"Personal care",
+    "price":"429.99",
+    "description":" A high-performance hair dryer that protects hair from heat damage while delivering fast drying and precision styling",
+    "stock":"40",
+    "image":"images/dyson.jpg"
+},
+{
+    "id":"5",
+    "name":"Jordan Jumpman MVP",
+    "category":"Sports",
+    "price":"215.00",
+    "description":"Premium basketball shoes featuring a combination of high-end leather and mesh for durability and comfort.",
+    "stock":"100",
+    "image":"images/jordan.webp"
+},
+{
+    "id":"6",
+    "name":"LED jellyfish lamp",
+    "category":"Home decor",
+    "price":"25.00",
+    "description":"A mesmerizing LED lamp featuring lifelike, synthetic jellyfish that glide smoothly in a tank.",
+    "stock":"120",
+    "image":"images/lamp.webp"
+},
+{
+    "id":"7",
+    "name":"CeraVe Moisturizing Cream",
+    "category":"Personal care",
+    "price":"16.99",
+    "description":"A rich body and face cream formulated with essential ceramides.",
+    "stock":"250",
+    "image":"images/cerave.jpg"
+},
+{
+    "id":"8",
+    "name":"Himalayan Salt Lamp",
+    "category":"Home decor",
+    "price":"29.99",
+    "description":"A natural Himalayan salt lamp that emits a warm amber glow, creating a cozy atmosphere.",
+    "stock":"120",
+    "image":"images/saltLamp.jpg"
+}
+]

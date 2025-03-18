@@ -1,36 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Image, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const POSTER_URL = `https://m.media-amazon.com/images/M/`; // Using a valid image URL base
 
 const DetailsScreen = ({ route }) => {
   const { movie } = route.params;
   const [isFavorite, setIsFavorite] = useState(false);
+  const [loading, setLoading] = useState(true); // Ensure AsyncStorage is done loading
 
   useEffect(() => {
     checkFavorite();
   }, []);
 
+  // Check if movie is in favorites
   const checkFavorite = async () => {
     try {
-      const favorites = JSON.parse(await AsyncStorage.getItem("favorites")) || [];
-      setIsFavorite(favorites.some((fav) => fav.imdbID === movie.imdbID));
+      const storedFavorites = await AsyncStorage.getItem("favorites");
+      const favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
+
+      // Check if the movie is already a favorite
+      const alreadyFavorite = favorites.some((fav) => fav.imdbID === movie.imdbID);
+
+      setIsFavorite(alreadyFavorite);
     } catch (error) {
       console.error("Error checking favorites:", error);
+    } finally {
+      setLoading(false); // Ensure button only loads after checking
     }
   };
 
+  // Toggle favorite status
   const toggleFavorite = async () => {
     try {
-      let favorites = JSON.parse(await AsyncStorage.getItem("favorites")) || [];
+      const storedFavorites = await AsyncStorage.getItem("favorites");
+      let favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
+
       if (isFavorite) {
         favorites = favorites.filter((fav) => fav.imdbID !== movie.imdbID);
+        Alert.alert("Removed", `${movie.Title} has been removed from favorites.`);
       } else {
         favorites.push(movie);
+        Alert.alert("Added", `${movie.Title} has been added to favorites.`);
       }
+
       await AsyncStorage.setItem("favorites", JSON.stringify(favorites));
-      setIsFavorite(!isFavorite);
+      setIsFavorite(!isFavorite); // Update button state
     } catch (error) {
       console.error("Error updating favorites:", error);
     }
@@ -41,9 +54,19 @@ const DetailsScreen = ({ route }) => {
       <Image source={{ uri: movie.Poster }} style={styles.detailPoster} />
       <Text style={styles.detailTitle}>{movie.Title}</Text>
       <Text style={styles.detailText}>Year: {movie.Year}</Text>
-      <TouchableOpacity style={[styles.button, isFavorite ? styles.removeButton : styles.addButton]} onPress={toggleFavorite}>
-        <Text style={styles.buttonText}>{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</Text>
-      </TouchableOpacity>
+
+      {/* Wait until AsyncStorage is loaded before showing button */}
+      {!loading && (
+        <TouchableOpacity
+          style={[styles.button, isFavorite ? styles.removeButton : styles.addButton]}
+          onPress={toggleFavorite}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>
+            {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -57,7 +80,7 @@ const styles = StyleSheet.create({
   },
   detailPoster: {
     width: "100%",
-    height: 300,
+    height: 350,
     borderRadius: 10,
     marginBottom: 20,
   },

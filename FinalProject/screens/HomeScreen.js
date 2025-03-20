@@ -47,11 +47,9 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const loadFavorites = async () => {
-    try {
-      const storedFavorites = await AsyncStorage.getItem("favorites");
-      setFavorites(storedFavorites ? JSON.parse(storedFavorites) : []);
-    } catch (error) {
-      console.error("Error loading favorites:", error);
+    const storedFavorites = await AsyncStorage.getItem("favorites"); 
+    if (storedFavorites) {
+      setFavorites(JSON.parse(storedFavorites));
     }
   };
 

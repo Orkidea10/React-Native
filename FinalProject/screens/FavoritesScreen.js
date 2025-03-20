@@ -1,63 +1,65 @@
-import React from "react";
-import { View, Text, StyleSheet ,Image, FlatList, TouchableOpacity} from 'react-native';
-import { FlatList } from "react-native-web";
+import React, { useState, useEffect } from "react";
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const FavoritesScreen = ({ navigation }) => {
+  const [favorites, setFavorites] = useState([]);
 
-const FavoritesScreen=({route,navigation}) =>{
-    const {favorites} = route.params;
+  useEffect(() => {
+    loadFavorites();
+  }, []);
 
-    return(
-        <View style={styles.container}>
-            <Text style={styles.header}>Favorite Movies</Text>
-            <FlatList
-            data={favorites}
-            keyExtractor={(item) => item.imdbID}
-            renderItem={({item})=>(
-                <TouchableOpacity onPress={()=>navigation.navigate('Details',{movie:item})}>
-                <View style={styles.movieContainer}>
-                    <Image source={{uri:item.Poster}} style={styles.poster}/>
-                    <Text style={styles.title}>{item.title} ({item.Year})</Text>
-                </View>
-                </TouchableOpacity>
-            )}
+  const loadFavorites = async () => {
+    const storedFavorites = await AsyncStorage.getItem("favorites");
+    if (storedFavorites) {
+      setFavorites(JSON.parse(storedFavorites));
+    }
+  };
 
-            />
-        </View>
-    )
-}
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={favorites}
+        keyExtractor={(item) => item.imdbID}
+        renderItem={({ item }) => (
+          <View style={styles.movieItem}>
+            <Image source={{ uri: item.Poster }} style={styles.poster} />
+            <Text style={styles.title}>{item.Title}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Details", { movie: item })}>
+              <Text style={styles.detailsButtonText}>View Details</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+    </View>
+  );
+};
 
-const styles =StyleSheet.create({
-    container:{
-        flex:1,
-        backgroundColor:"#fff",
-        padding:10,
-
-    },
-    header:{
-        fontSize:24,
-        fontWeight:'bold',
-        marginBottom:10,
-        textAlign:'center',
-    },
-    movieContainer:{
-        flexDirection:'row',
-        alignItems:'center',
-        marginBottom:10,
-        padding:10,
-        backgroundColor:'#f0f0f0',
-        borderRadius:8
-    },
-    poster:{
-        width:50,
-        height:75,
-        marginRight:10
-    },
-    title:{
-        fontSize:16,
-        flexShrink:1
-    },
-    
-
-
-})
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#121212",
+  },
+  movieItem: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "#1e1e1e",
+    margin: 8,
+    borderRadius: 10,
+    padding: 10,
+  },
+  poster: {
+    width: 150,
+    height: 220,
+  },
+  title: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  detailsButtonText: {
+    color: "#E50914",
+    fontWeight: "bold",
+  },
+});
 
 export default FavoritesScreen;

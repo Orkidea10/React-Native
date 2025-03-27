@@ -1,29 +1,29 @@
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import React, { useState, useEffect, useCallback } from "react";
-import { View, TextInput, Text, FlatList, Image, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { 
+  View, Text, FlatList, Image, TouchableOpacity, 
+  StyleSheet, TextInput, Dimensions 
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_KEY = "c4dddbcb";
-const API_URL = `http://www.omdbapi.com/?apikey=${API_KEY}&`;
-
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ favorites, setFavorites, navigation }) => {
   const [movies, setMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [favorites, setFavorites] = useState([]);
-  const [showFavorites, setShowFavorites] = useState(false);
+  const [numColumns, setNumColumns] = useState(2);
 
   useEffect(() => {
     fetchMovies("Batman");
-    loadFavorites();
-  }, []);
 
-  // Reload favorites when screen gains focus
-  useFocusEffect(
-    useCallback(() => {
-      loadFavorites();
-    }, [])
-  );
+    const updateNumColumns = () => {
+      const screenWidth = Dimensions.get("window").width;
+      setNumColumns(screenWidth > 768 ? 3 : 2);
+    };
+
+    updateNumColumns();
+    Dimensions.addEventListener("change", updateNumColumns);
+
+    return () => Dimensions.removeEventListener("change", updateNumColumns);
+  }, []);
 
   const fetchMovies = async (query) => {
     if (!query) {
@@ -31,9 +31,8 @@ const HomeScreen = ({ navigation }) => {
       return;
     }
     try {
-      const response = await fetch(`${API_URL}s=${query}`);
+      const response = await fetch(`http://www.omdbapi.com/?apikey=c4dddbcb&s=${query}`);
       const data = await response.json();
-
       if (data.Response === "True") {
         setMovies(data.Search);
         setErrorMessage("");
@@ -46,11 +45,9 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const loadFavorites = async () => {
-    const storedFavorites = await AsyncStorage.getItem("favorites"); 
-    if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
-    }
+  const clearSearch = () => {
+    setSearchQuery("");
+    fetchMovies("Batman");
   };
 
   const toggleFavorite = async (movie) => {
@@ -58,7 +55,7 @@ const HomeScreen = ({ navigation }) => {
     const isFavorite = favorites.some((fav) => fav.imdbID === movie.imdbID);
 
     if (isFavorite) {
-      updatedFavorites = favorites.filter((fav) => fav.imdbID !== movie.imdbID);
+      updatedFavorites = updatedFavorites.filter((fav) => fav.imdbID !== movie.imdbID);
     } else {
       updatedFavorites.push(movie);
     }
@@ -69,16 +66,23 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => setShowFavorites(!showFavorites)} style={styles.toggleButton}>
-        <Text style={styles.toggleButtonText}>{showFavorites ? "Show Movies" : "Show Favorites"}</Text>
-      </TouchableOpacity>
+      <Text style={styles.homeTitle}>Movie Explorer</Text>
+      
+     
+      <View style={styles.searchContainer}>
+        <TextInput
+          placeholder="Search for a movie..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          style={styles.input}
+        />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+            <Text style={styles.clearButtonText}>X</Text>
+          </TouchableOpacity>
+        )}
+      </View>
 
-      <TextInput
-        placeholder="Search for a movie..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        style={styles.input}
-      />
       <TouchableOpacity style={styles.searchButton} onPress={() => fetchMovies(searchQuery)}>
         <Text style={styles.searchButtonText}>Search</Text>
       </TouchableOpacity>
@@ -86,9 +90,10 @@ const HomeScreen = ({ navigation }) => {
       {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
       <FlatList
-        data={showFavorites ? favorites : movies}
+        data={movies}
         keyExtractor={(item) => item.imdbID}
-        numColumns={2}
+        numColumns={numColumns}
+        key={numColumns}
         renderItem={({ item }) => (
           <View style={styles.movieItem}>
             <Image source={{ uri: item.Poster }} style={styles.poster} />
@@ -99,8 +104,11 @@ const HomeScreen = ({ navigation }) => {
             >
               <Text style={styles.detailsButtonText}>View Details</Text>
             </TouchableOpacity>
+
             <TouchableOpacity onPress={() => toggleFavorite(item)}>
-              <Text style={styles.favorite}>{favorites.some((fav) => fav.imdbID === item.imdbID) ? "★" : "☆"}</Text>
+              <Text style={styles.favorite}>
+                {favorites.some((fav) => fav.imdbID === item.imdbID) ? "★" : "☆"}
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -110,41 +118,49 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#121212",
-  },
-  toggleButton: {
-    backgroundColor: "#1DB954",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  toggleButtonText: {
-    color: "#fff",
-    fontSize: 16,
+  container: { flex: 1, padding: 20, backgroundColor: "#121212" },
+  homeTitle: {
+    color: "#FFD700",
+    fontSize: 30,
+    paddingTop:7,
     fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
+    textTransform: "uppercase",
+    letterSpacing: 2,
   },
-  input: {
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 20,
-    padding: 12,
-    marginBottom: 10,
     backgroundColor: "#fff",
+    marginBottom: 10,
+  },
+  input: {
+    flex: 1,
+    padding: 12,
     fontSize: 16,
   },
+  clearButton: {
+    padding: 10,
+    marginRight: 10,
+  },
+  clearButtonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "red",
+  },
   searchButton: {
-    backgroundColor: "#1DB954",
+    backgroundColor: "gold",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
     marginBottom: 10,
   },
   searchButtonText: {
-    color: "#fff",
+    color: "black",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -155,20 +171,13 @@ const styles = StyleSheet.create({
     margin: 8,
     borderRadius: 10,
     padding: 10,
-    elevation: 3,
   },
   poster: {
     width: 150,
     height: 220,
     borderRadius: 8,
   },
-  title: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 5,
-  },
+  title: { color: "#fff", fontSize: 14, fontWeight: "bold", textAlign: "center", marginVertical: 5 },
   detailsButton: {
     backgroundColor: "#E50914",
     padding: 8,
@@ -177,21 +186,13 @@ const styles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
   },
-  detailsButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 14,
-  },
+  detailsButtonText: { color: "#fff", fontWeight: "bold", fontSize: 14 },
   favorite: {
     fontSize: 24,
     color: "gold",
     marginTop: 10,
   },
-  error: {
-    color: "red",
-    textAlign: "center",
-    marginBottom: 10,
-  },
+  error: { color: "red", textAlign: "center", marginBottom: 10 },
 });
 
 export default HomeScreen;
